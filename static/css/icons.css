@@ -1,0 +1,5 @@
+.pimcore_panel_tree_objects_alternate_tree,
+.plugin_alternate_object_trees,
+.plugin_alternate_object_trees_config {
+    background: url(/pimcore/static/img/icon/database_yellow.png) left center no-repeat !important;
+}

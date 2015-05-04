@@ -1,0 +1,28 @@
+<?xml version="1.0"?><zend-config xmlns:zf="http://framework.zend.com/xml/zend-config-xml/1.0/">
+    <plugin>
+        <pluginName>AlternateObjectTrees</pluginName>
+        <pluginDescription>AlternateObjectTrees Plugin</pluginDescription>
+        <pluginNiceName>AlternateObjectTrees Plugin</pluginNiceName>
+        <!--<pluginIcon>/plugins/KeyValue/static/img/icon.png</pluginIcon>-->
+        <pluginVersion>1.0.0</pluginVersion>
+        <pluginClassName>AlternateObjectTrees_Plugin</pluginClassName>
+        <pluginIncludePaths>
+            <path>/AlternateObjectTrees/lib</path>
+            <path>/AlternateObjectTrees/controllers</path>
+            <path>/AlternateObjectTrees/models</path>
+        </pluginIncludePaths>
+        <pluginNamespaces>
+            <namespace>AlternateObjectTrees</namespace>
+            <namespace>Object</namespace>
+        </pluginNamespaces>
+        <pluginJsPaths>
+            <path>/AlternateObjectTrees/static/js/plugin.js</path>
+            <path>/AlternateObjectTrees/static/js/tree.js</path>
+            <path>/AlternateObjectTrees/static/js/config/item.js</path>
+            <path>/AlternateObjectTrees/static/js/config/panel.js</path>
+        </pluginJsPaths>
+        <pluginCssPaths>
+            <path>/AlternateObjectTrees/static/css/icons.css</path>
+        </pluginCssPaths>
+    </plugin>
+</zend-config>
