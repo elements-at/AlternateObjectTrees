@@ -19,4 +19,4 @@ Plugin for defining alternate object trees based on object attributes.
  
 
 ### used by projects for example
-- Expert (http://expert.pim.elements.pm)
+- Expert (http://expert.pim.elements.pm).
