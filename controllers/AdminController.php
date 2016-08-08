@@ -38,6 +38,9 @@ class AlternateObjectTrees_AdminController extends Pimcore_Controller_Action_Adm
                 $config['valid'] = false;
             }
 
+            $config['leaf'] = true;
+            $config['expandable'] = false;
+
             // add
             $return[] = $config;
         }

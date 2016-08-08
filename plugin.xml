@@ -24,5 +24,15 @@
         <pluginCssPaths>
             <path>/AlternateObjectTrees/static/css/icons.css</path>
         </pluginCssPaths>
+
+        <pluginJsPaths-extjs6>
+            <path>/AlternateObjectTrees/static6/js/plugin.js</path>
+            <path>/AlternateObjectTrees/static6/js/tree.js</path>
+            <path>/AlternateObjectTrees/static6/js/config/item.js</path>
+            <path>/AlternateObjectTrees/static6/js/config/panel.js</path>
+        </pluginJsPaths-extjs6>
+        <pluginCssPaths-extjs6>
+            <path>/AlternateObjectTrees/static6/css/icons.css</path>
+        </pluginCssPaths-extjs6>
     </plugin>
 </zend-config>
