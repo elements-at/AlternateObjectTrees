@@ -48,6 +48,11 @@ class Installer extends AbstractInstaller
         ")->closeCursor();
     }
 
+    public function canBeUninstalled()
+    {
+        return $this->isInstalled();
+    }
+
     public function uninstall()
     {
         $db = Db::get();
