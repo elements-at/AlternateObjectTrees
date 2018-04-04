@@ -1,0 +1,3 @@
+_elements_alternate_object_trees:
+    resource: "@ElementsAlternateObjectTreesBundle/Controller/"
+    type:     annotation
