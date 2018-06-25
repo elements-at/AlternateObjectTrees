@@ -1,6 +1,7 @@
 {
   "name": "elements/alternate-object-trees",
   "type": "pimcore-bundle",
+  "description": "Pimcore Bundle for defining alternate object trees based on data object attributes",
   "autoload": {
     "psr-4": {
       "": "src"
