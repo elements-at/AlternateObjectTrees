@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Elements.at
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) elements.at New Media Solutions GmbH (https://www.elements.at)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
 namespace Elements\Bundle\AlternateObjectTreesBundle\Model;
 
 use Pimcore\Model\AbstractModel;
@@ -33,6 +46,7 @@ class Config extends AbstractModel
 
     /**
      * what object class should be used?
+     *
      * @var string
      */
     private $o_class;
@@ -52,7 +66,6 @@ class Config extends AbstractModel
      */
     private $jsonLevelDefinitions;
 
-
     /**
      * @param string $name
      *
@@ -61,6 +74,7 @@ class Config extends AbstractModel
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -72,6 +86,7 @@ class Config extends AbstractModel
     public function setDescription($description)
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -83,9 +98,9 @@ class Config extends AbstractModel
     public function setBasePath($path)
     {
         $this->basepath = $path;
+
         return $this;
     }
-
 
     /**
      * @return $this
@@ -93,9 +108,9 @@ class Config extends AbstractModel
     public function save()
     {
         $this->getDao()->save();
+
         return $this;
     }
-
 
     /**
      * delete object
@@ -160,7 +175,6 @@ class Config extends AbstractModel
     {
         $this->o_class = $o_class;
     }
-
 
     /**
      * @return int
@@ -228,6 +242,7 @@ class Config extends AbstractModel
 
     /**
      * @param int $id
+     *
      * @return Config|null
      */
     public static function getById($id)

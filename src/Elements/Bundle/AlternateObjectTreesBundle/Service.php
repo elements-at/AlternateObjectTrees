@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Elements.at
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) elements.at New Media Solutions GmbH (https://www.elements.at)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
 namespace Elements\Bundle\AlternateObjectTreesBundle;
 
 use Elements\Bundle\AlternateObjectTreesBundle\LevelDefinition\Input;
@@ -18,7 +31,7 @@ class Service
     /**
      * @var array
      */
-    private $levelDefinitions = array();
+    private $levelDefinitions = [];
 
     /**
      * @param Config $tree
@@ -32,19 +45,23 @@ class Service
     /**
      * @return ClassDefinition
      */
-    private function getClass() {
+    private function getClass()
+    {
         return ClassDefinition::getByName($this->tree->getO_Class());
     }
 
     /**
      * @param $level
+     *
      * @return null|Input
      */
-    public function getLevelDefinitionByLevel($level) {
-        $levelDefinition = $this->levelDefinitions[$level-1];
+    public function getLevelDefinitionByLevel($level)
+    {
+        $levelDefinition = $this->levelDefinitions[$level - 1];
         $class = $this->getClass();
-        if($levelDefinition && $class) {
+        if ($levelDefinition && $class) {
             $levelDefinitionClass = 'Elements\\Bundle\\AlternateObjectTreesBundle\\LevelDefinition\\'.ucfirst($levelDefinition['type']);
+
             return new $levelDefinitionClass($class, $levelDefinition['config']);
         } else {
             return null;
@@ -55,53 +72,51 @@ class Service
      * @param $filterValues
      * @param $currentLevel
      * @param $currentAttributeValue
+     *
      * @return string
      */
-    public function buildCondition($filterValues, $currentLevel, $currentAttributeValue) {
+    public function buildCondition($filterValues, $currentLevel, $currentAttributeValue)
+    {
         $filterValues = json_decode($filterValues, true);
 
-        $condition = "o_classId = " . $this->getClass()->getId();
+        $condition = 'o_classId = ' . $this->getClass()->getId();
 
-        if($this->tree->getBasepath()) {
+        if ($this->tree->getBasepath()) {
             $db = Db::get();
-            $condition .= " AND o_path LIKE " . $db->quote('%' . $this->tree->getBasepath() . '%');
+            $condition .= ' AND o_path LIKE ' . $db->quote('%' . $this->tree->getBasepath() . '%');
         }
 
-        if($filterValues) {
-            foreach($filterValues as $level => $value) {
+        if ($filterValues) {
+            foreach ($filterValues as $level => $value) {
                 $levelDefinition = $this->getLevelDefinitionByLevel($level);
-                $condition .= " AND " . $levelDefinition->getCondition($value);
+                $condition .= ' AND ' . $levelDefinition->getCondition($value);
             }
         }
 
-        if($currentLevel) {
+        if ($currentLevel) {
             $levelDefinition = $this->getLevelDefinitionByLevel($currentLevel);
-            $condition .= " AND " . $levelDefinition->getCondition($currentAttributeValue);
+            $condition .= ' AND ' . $levelDefinition->getCondition($currentAttributeValue);
         }
 
         return $condition;
-
     }
 
     /**
      * @param $filterValues
      * @param $currentLevel
      * @param $currentAttributeValue
+     *
      * @return Listing
      */
-    public function getListWithCondition($filterValues, $currentLevel, $currentAttributeValue) {
+    public function getListWithCondition($filterValues, $currentLevel, $currentAttributeValue)
+    {
         $condition = $this->buildCondition($filterValues, $currentLevel, $currentAttributeValue);
 
-        $listClass = "Pimcore\\Model\\DataObject\\" . ucfirst($this->getClass()->getName()) . "\\Listing";
+        $listClass = 'Pimcore\\Model\\DataObject\\' . ucfirst($this->getClass()->getName()) . '\\Listing';
 
         $objectList = new $listClass();
         $objectList->setCondition($condition);
 
         return $objectList;
     }
-
-
-
-
-
 }

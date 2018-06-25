@@ -1,7 +1,6 @@
 {
   "name": "elements/alternate-object-trees",
   "type": "pimcore-bundle",
-  "version": "1.0.0",
   "autoload": {
     "psr-4": {
       "": "src"

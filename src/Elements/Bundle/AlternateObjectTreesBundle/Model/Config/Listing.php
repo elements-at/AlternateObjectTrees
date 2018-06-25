@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Elements.at
+ *
+ * This source file is available under two different licenses:
+ * - GNU General Public License version 3 (GPLv3)
+ * - Pimcore Enterprise License (PEL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ *  @copyright  Copyright (c) elements.at New Media Solutions GmbH (https://www.elements.at)
+ *  @license    http://www.pimcore.org/license     GPLv3 and PEL
+ */
+
 namespace Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
 
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
@@ -15,6 +28,7 @@ class Listing implements \Iterator, \Countable
 
     /**
      * position in result set
+     *
      * @var int
      */
     private $cursor = 0;
@@ -22,17 +36,13 @@ class Listing implements \Iterator, \Countable
     /**
      * @var array
      */
-    private $rows = array();
+    private $rows = [];
 
     /**
      * @var array
      */
-    private $conditions = array();
+    private $conditions = [];
 
-
-    /**
-     *
-     */
     public function __construct()
     {
         $this->db = Db::get();
@@ -46,34 +56,38 @@ class Listing implements \Iterator, \Countable
     public function addCondition($condition)
     {
         $this->conditions[] = $condition;
+
         return $this;
     }
 
     /**
      * resets all conditions of product list
+     *
      * @return $this
      */
     public function resetConditions()
     {
-        $this->conditions = array();
+        $this->conditions = [];
+
         return $this;
     }
 
-
     /**
      * @link http://framework.zend.com/issues/browse/ZF-2388 (bug with multi statement)
+     *
      * @return $this
      */
     public function load()
     {
         // create sql where
         $condition = '';
-        foreach($this->conditions as $cond)
+        foreach ($this->conditions as $cond) {
             $condition .= ' AND '.$cond;
+        }
 
         // execute query
         $sql = sprintf('SELECT * FROM %s WHERE 1 %s', Dao::TABLE_NAME, $condition);
-        #var_dump($sql);exit;
+        //var_dump($sql);exit;
         $this->rows = $this->db->fetchAll($sql);
 
         return $this;
@@ -85,11 +99,12 @@ class Listing implements \Iterator, \Countable
      *
      * @link http://php.net/manual/en/iterator.current.php
      * @link http://framework.zend.com/manual/1.12/de/zend.db.statement.html
+     *
      * @return mixed Can return any type.
      */
     public function current()
     {
-        return Config::getById( $this->rows[$this->cursor]['id'] );
+        return Config::getById($this->rows[$this->cursor]['id']);
     }
 
     /**
@@ -97,6 +112,7 @@ class Listing implements \Iterator, \Countable
      * Move forward to next element
      *
      * @link http://php.net/manual/en/iterator.next.php
+     *
      * @return void Any returned value is ignored.
      */
     public function next()
@@ -109,6 +125,7 @@ class Listing implements \Iterator, \Countable
      * Return the key of the current element
      *
      * @link http://php.net/manual/en/iterator.key.php
+     *
      * @return mixed scalar on success, or null on failure.
      */
     public function key()
@@ -121,7 +138,8 @@ class Listing implements \Iterator, \Countable
      * Checks if current position is valid
      *
      * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
+     *
+     * @return bool The return value will be casted to boolean and then evaluated.
      *       Returns true on success or false on failure.
      */
     public function valid()
@@ -134,6 +152,7 @@ class Listing implements \Iterator, \Countable
      * Rewind the Iterator to the first element
      *
      * @link http://php.net/manual/en/iterator.rewind.php
+     *
      * @return void Any returned value is ignored.
      */
     public function rewind()
@@ -146,6 +165,7 @@ class Listing implements \Iterator, \Countable
      * Count elements of an object
      *
      * @link http://php.net/manual/en/countable.count.php
+     *
      * @return int The custom count as an integer.
      * </p>
      * <p>
