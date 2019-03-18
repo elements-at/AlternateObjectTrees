@@ -155,6 +155,12 @@ pimcore.plugin.alternateObjectTrees.config.item = Class.create({
                 name: "active",
                 fieldLabel: t("active"),
                 checked: this.data.active == "1"
+            },  {
+                xtype: "textfield",
+                name: "customTreeBuilderClass",
+                value: this.data.customTreeBuilderClass,
+                fieldLabel: t("customTreeBuilderClass"),
+                width: 400
             }
             ]
         });

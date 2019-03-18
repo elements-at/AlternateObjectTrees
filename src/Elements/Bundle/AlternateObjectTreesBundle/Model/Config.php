@@ -45,6 +45,11 @@ class Config extends AbstractModel
     private $label;
 
     /**
+     * @var string
+     */
+    private $customTreeBuilderClass;
+
+    /**
      * what object class should be used?
      *
      * @var string
@@ -239,6 +244,24 @@ class Config extends AbstractModel
     {
         return $this->label;
     }
+
+    /**
+     * @return string
+     */
+    public function getCustomTreeBuilderClass()
+    {
+        return $this->customTreeBuilderClass;
+    }
+
+    /**
+     * @param string $customTreeBuilderClass
+     */
+    public function setCustomTreeBuilderClass($customTreeBuilderClass): void
+    {
+        $this->customTreeBuilderClass = $customTreeBuilderClass;
+    }
+
+
 
     /**
      * @param int $id

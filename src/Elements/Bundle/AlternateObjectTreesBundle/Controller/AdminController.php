@@ -15,6 +15,8 @@
 
 namespace Elements\Bundle\AlternateObjectTreesBundle\Controller;
 
+use Elements\Bundle\AlternateObjectTreesBundle\CustomTreeBuilder\DefaultTreeBuilder;
+use Elements\Bundle\AlternateObjectTreesBundle\CustomTreeBuilder\Factory;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config\Listing;
 use Elements\Bundle\AlternateObjectTreesBundle\Service;
@@ -60,6 +62,10 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
             if ($tree->getIcon() != '') {
                 $config['icon'] = $tree->getIcon();
+            }
+
+            if ($tree->getCustomTreeBuilderClass() != '') {
+                $config['customTreeBuilderClass'] = $tree->getCustomTreeBuilderClass();
             }
 
             // permission check
@@ -154,6 +160,7 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             'o_class' => $tree->getO_Class(),
             'basepath' => $tree->getBasepath(),
             'active' => $tree->getActive(),
+            'customTreeBuilderClass' => $tree->getCustomTreeBuilderClass(),
             'levelDefinitions' => json_decode($tree->getJsonLevelDefinitions(), true)
         ];
 
@@ -200,6 +207,10 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
         if (array_key_exists('label', $settings)) {
             $tree->setLabel($settings['label']);
+        }
+
+        if (array_key_exists('customTreeBuilderClass', $settings)) {
+            $tree->setCustomTreeBuilderClass($settings['customTreeBuilderClass']);
         }
 
         if ($request->get('levelDefinitions')) {
@@ -250,6 +261,16 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             }
         }
 
+        if ($tree) {
+            if ($treeBuilderClass = $tree->getCustomTreeBuilderClass()) {
+                $treeBuilder = Factory::create($tree, $this->getUser());
+                return $this->json(
+                    $treeBuilder->handleNodeRequest($request)
+                );
+            }
+        }
+        $treeBuilder = new DefaultTreeBuilder($tree, $this->getUser());
+
         $objects = [];
         if ($request->get('isConfigNode')) {
             $level = $request->get('level');
@@ -287,7 +308,7 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
 
                     foreach ($objectList->load() as $object) {
                         /* @var AbstractObject $object */
-                        $tmpObject = $this->getTreeNodeConfig($object);
+                        $tmpObject = $treeBuilder->getTreeNodeConfig($object);
 
                         if ($object->isAllowed('list')) {
                             $objects[] = $tmpObject;
@@ -354,76 +375,5 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         } else {
             return null;
         }
-    }
-
-    /**
-     * @param AbstractObject $child
-     *
-     * @return array
-     */
-    protected function getTreeNodeConfig($child)
-    {
-        $tmpObject = [
-            'id' => $child->getId(),
-            'text' => $child->getKey(),
-            'type' => $child->getType(),
-            'path' => $child->getFullPath(),
-            'basePath' => $child->getPath(),
-            'elementType' => 'object',
-            'locked' => $child->isLocked(),
-            'lockOwner' => $child->getLocked() ? true : false,
-            'data' => [
-                'permissions' => []
-            ]
-        ];
-
-        $tmpObject['isTarget'] = false;
-        $tmpObject['allowDrop'] = false;
-        $tmpObject['allowChildren'] = false;
-
-        $tmpObject['leaf'] = $child->hasNoChilds();
-
-        $tmpObject['isTarget'] = false;
-        $tmpObject['allowDrop'] = false;
-        $tmpObject['allowChildren'] = false;
-        $tmpObject['cls'] = '';
-
-        if ($child->getType() == 'folder') {
-            $tmpObject['qtipCfg'] = [
-                'title' => 'ID: ' . $child->getId()
-            ];
-        } else {
-            $tmpObject['published'] = $child->isPublished();
-            $tmpObject['className'] = $child->getClass()->getName();
-            $tmpObject['qtipCfg'] = [
-                'title' => 'ID: ' . $child->getId(),
-                'text' => 'Type: ' . $child->getClass()->getName()
-            ];
-
-            if (!$child->isPublished()) {
-                $tmpObject['cls'] .= 'pimcore_unpublished ';
-            }
-        }
-        if ($child->getElementAdminStyle()->getElementIcon()) {
-            $tmpObject['icon'] = $child->getO_elementAdminStyle()->getElementIcon();
-        }
-        if ($child->getElementAdminStyle()->getElementIconClass()) {
-            $tmpObject['iconCls'] = $child->getO_elementAdminStyle()->getElementIconClass();
-        }
-        if ($child->getElementAdminStyle()->getElementCssClass()) {
-            $tmpObject['cls'] .= $child->getO_elementAdminStyle()->getElementCssClass() . ' ';
-        }
-
-        $tmpObject['expanded'] = $child->hasNoChilds();
-        $tmpObject['permissions'] = $child->getUserPermissions($this->getUser());
-
-        if ($child->isLocked()) {
-            $tmpObject['cls'] .= 'pimcore_treenode_locked ';
-        }
-        if ($child->getLocked()) {
-            $tmpObject['cls'] .= 'pimcore_treenode_lockOwner ';
-        }
-
-        return $tmpObject;
     }
 }
