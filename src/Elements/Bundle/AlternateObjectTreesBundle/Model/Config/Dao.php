@@ -28,7 +28,7 @@ class Dao extends AbstractDao
      */
     protected $validColumns = [];
 
-    protected $fieldsToSave = ['active', 'name', 'o_class', 'description', 'basepath', 'jsonLevelDefinitions', 'icon', 'label'];
+    protected $fieldsToSave = ['active', 'name', 'o_class', 'description', 'basepath', 'jsonLevelDefinitions', 'icon', 'label', 'customTreeBuilderClass'];
 
     /**
      * Get the valid columns from the database
