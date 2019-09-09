@@ -132,7 +132,7 @@ class Relations implements LevelDefinitionInterface
 
     public static function getCompatibleFields(ClassDefinition $class)
     {
-        $compatible = ['objects', 'href'];
+        $compatible = ['objects', 'href', 'manyToManyObjectRelation', 'manyToOneRelation'];
         $list = [];
 
         foreach ($class->getFieldDefinitions() as $field) {
