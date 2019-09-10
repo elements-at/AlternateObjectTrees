@@ -386,6 +386,66 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
                 objectId: objectId
             }
         )
+    },
 
+    exportPrepare: function(settings){
+        var jobs = [];
+
+        var filters = "";
+        var condition = "";
+        var searchQuery = this.searchField.getValue();
+
+        if(this.sqlButton.pressed) {
+            condition = this.sqlEditor.getValue();
+        } else {
+            var filterData = this.store.getFilters().items;
+            if(filterData.length > 0) {
+                filters = this.store.getProxy().encodeFilters(filterData);
+            }
+        }
+
+
+        var fields = this.getGridConfig().columns;
+        var fieldKeys = Object.keys(fields);
+
+        //create the ids array which contains chosen rows to export
+        ids = [];
+        var selectedRows = this.grid.getSelectionModel().getSelection();
+        for (var i = 0; i < selectedRows.length; i++) {
+            ids.push(selectedRows[i].data.id);
+        }
+
+        settings = Ext.encode(settings);
+
+        var params = {
+            filter: filters,
+            condition: condition,
+            classId: this.classId,
+            folderId: this.element.id,
+            objecttype: this.objecttype,
+            language: this.gridLanguage,
+            "ids[]": ids,
+            "fields[]": fieldKeys,
+            settings: settings,
+            query: searchQuery,
+            batch: true, // to avoid limit for export
+            alternateTreeId: this.object.data.general.treeId,
+            level: this.object.data.general.level,
+            attributeValue: this.object.data.general.attributeValue
+        };
+
+
+        Ext.Ajax.request({
+            url: "/admin/elements-alternate-object-trees/admin/get-export-jobs",
+            params: params,
+            success: function (response) {
+                var rdata = Ext.decode(response.responseText);
+
+                if (rdata.success && rdata.jobs) {
+                    this.exportProcess(rdata.jobs, rdata.fileHandle, fieldKeys, true, settings);
+                }
+
+            }.bind(this)
+        });
     },
 });

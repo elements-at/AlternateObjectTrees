@@ -443,15 +443,7 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         $allParams = array_merge($request->request->all(), $request->query->all());
         $allParams['folderId'] = 1;
 
-        $requestedLanguage = $allParams['language'];
-        if ($requestedLanguage) {
-            if ($requestedLanguage != 'default') {
-                //                $this->get('translator')->setLocale($requestedLanguage);
-                $request->setLocale($requestedLanguage);
-            }
-        } else {
-            $requestedLanguage = $request->getLocale();
-        }
+        $requestedLanguage = $this->extractLanguage($request);
 
         $tree = null;
         // load / create tree service
@@ -462,12 +454,12 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
             }
         }
 
-        $classDefinition = ClassDefinition::getByName($tree->getO_Class());
-        $allParams['classId'] = $classDefinition->getId();
-
         if(!isset($service)) {
             return $this->adminJson([], JsonResponse::HTTP_NOT_FOUND);
         }
+
+        $classDefinition = ClassDefinition::getByName($tree->getO_Class());
+        $allParams['classId'] = $classDefinition->getId();
 
         $list = $service->getListWithCondition(null, $request->get('level'), $request->get('attributeValue'));
         $condition = $list->getCondition();
@@ -520,5 +512,67 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         }
 
         return $bricks;
+    }
+
+    /**
+     * @Route("/get-export-jobs")
+     *
+     * @param Request $request
+     */
+    public function getExportJobsAction(Request $request) {
+        $requestedLanguage = $this->extractLanguage($request);
+        $allParams = array_merge($request->request->all(), $request->query->all());
+        $allParams['folderId'] = 1;
+
+        $tree = null;
+        // load / create tree service
+        if ($request->get('alternateTreeId')) {
+            $tree = Config::getById($request->get('alternateTreeId'));
+            if ($tree) {
+                $service = new Service($tree);
+            }
+        }
+
+        if(!isset($service)) {
+            return $this->adminJson([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $classDefinition = ClassDefinition::getByName($tree->getO_Class());
+        $allParams['classId'] = $classDefinition->getId();
+
+        $list = $service->getListWithCondition(null, $request->get('level'), $request->get('attributeValue'));
+        $condition = $list->getCondition();
+
+        $gridHelperService = new GridHelperService();
+        $list = $gridHelperService->prepareListingForGrid($allParams, $requestedLanguage, $this->getAdminUser());
+        $list->setCondition($list->getCondition().' AND '.$condition);
+
+        $ids = $list->loadIdList();
+
+        $jobs = array_chunk($ids, 20);
+
+        $fileHandle = uniqid('export-');
+        file_put_contents(PIMCORE_SYSTEM_TEMP_DIRECTORY . '/' . $fileHandle . '.csv', '');
+
+        return $this->adminJson(['success' => true, 'jobs' => $jobs, 'fileHandle' => $fileHandle]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return mixed|string
+     */
+    protected function extractLanguage(Request $request)
+    {
+        $requestedLanguage = $request->get('language');
+        if ($requestedLanguage) {
+            if ($requestedLanguage != 'default') {
+                $request->setLocale($requestedLanguage);
+            }
+        } else {
+            $requestedLanguage = $request->getLocale();
+        }
+
+        return $requestedLanguage;
     }
 }
