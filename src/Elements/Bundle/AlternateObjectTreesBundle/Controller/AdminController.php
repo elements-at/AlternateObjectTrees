@@ -20,10 +20,12 @@ use Elements\Bundle\AlternateObjectTreesBundle\CustomTreeBuilder\Factory;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config\Listing;
 use Elements\Bundle\AlternateObjectTreesBundle\Service;
+use Pimcore\Bundle\AdminBundle\Helper\GridHelperService;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\User\Permission\Definition;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -230,6 +232,10 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
         $fields = [];
         $class = ClassDefinition::getByName($request->get('name'));
 
+        if(!$class instanceof ClassDefinition) {
+            return $this->json([]);
+        }
+
         $lib = 'Elements\Bundle\AlternateObjectTreesBundle\LevelDefinition\\'.ucfirst($request->get('type'));
         $compatible = $lib::getCompatibleFields($class);
 
@@ -252,6 +258,7 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
      */
     public function treeGetChildrenByIdAction(Request $request)
     {
+        $tree = null;
 
         // load / create tree service
         if ($request->get('alternateTreeId')) {
@@ -366,14 +373,152 @@ class AdminController extends \Pimcore\Bundle\AdminBundle\Controller\AdminContro
                         'level' => $nextLevel,
                         'attributeValue' => $value['value'],
                         'isConfigNode' => true,
-                        'permissions' => []
+                        'permissions' => [],
+                        'filter' => $levelDefinition->getFieldname(),
+                        'treeId' => $service->getTreeId()
                     ];
                 }
             }
 
             return ['count' => $groupedValues['count'], 'list' => $objects];
-        } else {
-            return null;
         }
+
+        return null;
+    }
+
+    /**
+     * @Route("/grid-get-data")
+     * @param Request $request
+     *
+     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     */
+    public function gridGetDataAction(Request $request) {
+        $tree = null;
+
+        // load / create tree service
+        if ($request->get('alternateTreeId')) {
+            $tree = Config::getById($request->get('alternateTreeId'));
+            if ($tree) {
+                $service = new Service($tree);
+            }
+        }
+
+        if(!isset($service)) {
+            return $this->adminJson([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $levelDefinition = $service->getLevelDefinitionByLevel($request->get('level', 1));
+
+        $objectData = [];
+
+        $objectData['general'] = [
+            'o_key' => $tree->getLabel(),
+            'treeId' => $tree->getId(),
+            'level' => $request->get('level'),
+            'attributeValue' => $request->get('attributeValue')
+        ];
+
+
+        $objectData['userPermissions'] = [];
+
+        $classDefinition = ClassDefinition::getByName($tree->getO_Class());
+        if($classDefinition instanceof ClassDefinition) {
+            $objectData['classes'] = [
+                [
+                    'id'   => $classDefinition->getId(),
+                    'name' => $classDefinition->getName(),
+                ],
+            ];
+        }
+
+
+        return $this->adminJson($objectData);
+    }
+
+    /**
+     * @Route("/grid-proxy")
+     * @param Request $request
+     */
+    public function gridProxyAction(Request $request) {
+        $allParams = array_merge($request->request->all(), $request->query->all());
+        $allParams['folderId'] = 1;
+
+        $requestedLanguage = $allParams['language'];
+        if ($requestedLanguage) {
+            if ($requestedLanguage != 'default') {
+                //                $this->get('translator')->setLocale($requestedLanguage);
+                $request->setLocale($requestedLanguage);
+            }
+        } else {
+            $requestedLanguage = $request->getLocale();
+        }
+
+        $tree = null;
+        // load / create tree service
+        if ($request->get('alternateTreeId')) {
+            $tree = Config::getById($request->get('alternateTreeId'));
+            if ($tree) {
+                $service = new Service($tree);
+            }
+        }
+
+        $classDefinition = ClassDefinition::getByName($tree->getO_Class());
+        $allParams['classId'] = $classDefinition->getId();
+
+        if(!isset($service)) {
+            return $this->adminJson([], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $list = $service->getListWithCondition(null, $request->get('level'), $request->get('attributeValue'));
+        $condition = $list->getCondition();
+
+        $gridHelperService = new GridHelperService();
+        $list = $gridHelperService->prepareListingForGrid($allParams, $requestedLanguage, $this->getAdminUser());
+        $list->setCondition($list->getCondition().' AND '.$condition);
+
+        $objects = [];
+        foreach ($list as $object) {
+            $o = \Pimcore\Model\DataObject\Service::gridObjectData($object, $allParams['fields'], $requestedLanguage);
+            // Like for treeGetChildsByIdAction, so we respect isAllowed method which can be extended (object DI) for custom permissions, so relying only users_workspaces_object is insufficient and could lead security breach
+            if ($object->isAllowed('list')) {
+                $objects[] = $o;
+            }
+        }
+
+        $result = ['data' => $objects, 'success' => true, 'total' => $list->getTotalCount()];
+
+        return $this->adminJson($result);
+    }
+
+    /**
+     * @param array $fieldsParameter
+     *
+     * @return array
+     */
+    protected function extractBricks(array $fields)
+    {
+        $bricks = [];
+        if ($fields) {
+            foreach ($fields as $f) {
+                $fieldName = $f;
+                $parts = explode('~', $f);
+                if (substr($f, 0, 1) == '~') {
+                    // key value, ignore for now
+                } elseif (count($parts) > 1) {
+                    $brickType = $parts[0];
+
+                    if (strpos($brickType, '?') !== false) {
+                        $brickDescriptor = substr($brickType, 1);
+                        $brickDescriptor = json_decode($brickDescriptor, true);
+                        $brickType = $brickDescriptor['containerKey'];
+                    }
+
+                    $bricks[$brickType] = $brickType;
+                }
+                $newFields[] = $fieldName;
+            }
+        }
+
+        return $bricks;
     }
 }

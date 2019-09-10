@@ -194,6 +194,26 @@ pimcore.plugin.alternateObjectTrees.tree = Class.create(pimcore.object.tree, {
 
         this.config.parentPanel.insert(this.config.index, this.tree);
         this.config.parentPanel.updateLayout();
-    }
+    },
+
+    onTreeNodeClick: function (tree, record, item, index, event, eOpts ) {
+        try {
+            if (record.data.permissions.view) {
+                pimcore.helpers.openObject(record.get('objectId'), record.get('type'));
+            } else {
+                var id = record.get('treeId')+'-'+record.get('level')+'-'+record.get('attributeValue');
+                if (pimcore.globalmanager.exists("tree_" + id) == false) {
+                    pimcore.globalmanager.add("tree_" + id, new pimcore.plugin.alternateObjectTrees.folder(record.get('treeId'), record.get('level'), record.get('attributeValue')));
+                    pimcore.helpers.rememberOpenTab("tree_" + id);
+                }
+                else {
+                    var tab = pimcore.globalmanager.get("tree_" + id);
+                    tab.activate();
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    },
 });
 

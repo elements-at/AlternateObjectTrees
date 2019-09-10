@@ -16,6 +16,7 @@
 namespace Elements\Bundle\AlternateObjectTreesBundle;
 
 use Elements\Bundle\AlternateObjectTreesBundle\LevelDefinition\Input;
+use Elements\Bundle\AlternateObjectTreesBundle\LevelDefinition\LevelDefinitionInterface;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\ClassDefinition;
@@ -50,10 +51,14 @@ class Service
         return ClassDefinition::getByName($this->tree->getO_Class());
     }
 
+    public function getTreeId() {
+        return $this->tree->getId();
+    }
+
     /**
      * @param $level
      *
-     * @return null|Input
+     * @return null|LevelDefinitionInterface
      */
     public function getLevelDefinitionByLevel($level)
     {
@@ -63,9 +68,9 @@ class Service
             $levelDefinitionClass = 'Elements\\Bundle\\AlternateObjectTreesBundle\\LevelDefinition\\'.ucfirst($levelDefinition['type']);
 
             return new $levelDefinitionClass($class, $levelDefinition['config']);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

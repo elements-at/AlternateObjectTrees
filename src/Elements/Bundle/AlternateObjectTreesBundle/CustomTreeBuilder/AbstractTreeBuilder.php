@@ -20,6 +20,7 @@ use Elements\Bundle\AlternateObjectTreesBundle\Model\Config;
 use Elements\Bundle\AlternateObjectTreesBundle\Model\Node;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Listing;
 use Symfony\Component\HttpFoundation\Request;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -105,13 +106,13 @@ abstract class AbstractTreeBuilder
     }
 
     /**
-     * @param AbstractObject $child
+     * @param Concrete $child
      * @return array
      */
     public function getTreeNodeConfig($child)
     {
         $tmpObject = [
-            'id' => $child->getId(),
+            'objectId' => $child->getId(),
             'text' => $child->getKey(),
             'type' => $child->getType(),
             'path' => $child->getFullPath(),
@@ -124,18 +125,14 @@ abstract class AbstractTreeBuilder
             ]
         ];
 
-        $tmpObject['isTarget'] = false;
-        $tmpObject['allowDrop'] = false;
-        $tmpObject['allowChildren'] = false;
-
-        $tmpObject['leaf'] = $child->hasNoChilds();
+        $tmpObject['leaf'] = !$child->hasChildren();
 
         $tmpObject['isTarget'] = false;
         $tmpObject['allowDrop'] = false;
         $tmpObject['allowChildren'] = false;
         $tmpObject['cls'] = '';
 
-        if ($child->getType() == 'folder') {
+        if ($child->getType() === 'folder') {
             $tmpObject['qtipCfg'] = [
                 'title' => 'ID: ' . $child->getId()
             ];
@@ -152,17 +149,17 @@ abstract class AbstractTreeBuilder
             }
         }
         if ($child->getElementAdminStyle()->getElementIcon()) {
-            $tmpObject['icon'] = $child->getO_elementAdminStyle()->getElementIcon();
+            $tmpObject['icon'] = $child->getElementAdminStyle()->getElementIcon();
         }
         if ($child->getElementAdminStyle()->getElementIconClass()) {
-            $tmpObject['iconCls'] = $child->getO_elementAdminStyle()->getElementIconClass();
+            $tmpObject['iconCls'] = $child->getElementAdminStyle()->getElementIconClass();
         }
         if ($child->getElementAdminStyle()->getElementCssClass()) {
-            $tmpObject['cls'] .= $child->getO_elementAdminStyle()->getElementCssClass() . ' ';
+            $tmpObject['cls'] .= $child->getElementAdminStyle()->getElementCssClass() . ' ';
         }
 
-        $tmpObject['expanded'] = $child->hasNoChilds();
-        $tmpObject['permissions'] = $child->getUserPermissions($this->getUser());
+        $tmpObject['expanded'] = !$child->hasChildren();
+        $tmpObject['permissions'] = $child->getUserPermissions();
 
         if ($child->isLocked()) {
             $tmpObject['cls'] .= 'pimcore_treenode_locked ';

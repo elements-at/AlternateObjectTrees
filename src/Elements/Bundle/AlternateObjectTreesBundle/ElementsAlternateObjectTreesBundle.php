@@ -17,9 +17,14 @@ namespace Elements\Bundle\AlternateObjectTreesBundle;
 
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Installer\InstallerInterface;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
 class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
 {
+    use PackageVersionTrait {
+        getVersion as protected getComposerVersion;
+    }
+
     const PLUGIN_NAME = 'AlternateObjectTrees';
 
     public function getNiceName()
@@ -30,11 +35,6 @@ class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
     public function getDescription()
     {
         return 'Alternative object trees.';
-    }
-
-    public function getVersion()
-    {
-        return '1.0';
     }
 
     /**
@@ -55,6 +55,8 @@ class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
         return [
             '/bundles/elementsalternateobjecttrees/js/plugin.js',
             '/bundles/elementsalternateobjecttrees/js/tree.js',
+            '/bundles/elementsalternateobjecttrees/js/folder.js',
+            '/bundles/elementsalternateobjecttrees/js/search.js',
             '/bundles/elementsalternateobjecttrees/js/config/item.js',
             '/bundles/elementsalternateobjecttrees/js/config/panel.js'
         ];
@@ -68,5 +70,24 @@ class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
     public function getInstaller()
     {
         return new Installer();
+    }
+
+    public function getVersion()
+    {
+        try {
+            return $this->getComposerVersion();
+        } catch (\Exception $e) {
+            return 'unknown';
+        }
+    }
+
+    /**
+     * Returns the composer package name used to resolve the version
+     *
+     * @return string
+     */
+    protected function getComposerPackageName()
+    {
+        return 'elements/alternate-object-trees';
     }
 }
