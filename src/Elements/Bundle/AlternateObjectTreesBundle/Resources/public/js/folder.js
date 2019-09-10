@@ -11,21 +11,69 @@ pimcore.plugin.alternateObjectTrees.folder = Class.create(pimcore.object.folder,
     },
 
     init: function () {
-        var user = pimcore.globalmanager.get("user");
-
         this.search = new pimcore.plugin.alternateObjectTrees.search(this);
+    },
 
-        if (this.isAllowed("properties")) {
-            this.properties = new pimcore.element.properties(this, "object");
+    getLayoutToolbar : function () {
+        if (!this.toolbar) {
+            var buttons = [];
+            buttons.push({
+                tooltip: t('reload'),
+                iconCls: "pimcore_material_icon_reload pimcore_material_icon",
+                scale: "medium",
+                handler: this.reload.bind(this)
+            });
+
+            this.toolbar = new Ext.Toolbar({
+                id: "object_toolbar_" + this.id,
+                region: "north",
+                border: false,
+                cls: "pimcore_main_toolbar",
+                items: buttons,
+                overflowHandler: 'scroller'
+            });
         }
 
-        if (user.isAllowed("notes_events")) {
-            this.notes = new pimcore.element.notes(this, "object");
+        return this.toolbar;
+    },
+
+    getTabPanel: function () {
+        var items = [];
+
+        var search = this.search.getLayout();
+        if (search) {
+            items.push(search);
         }
 
-        this.dependencies = new pimcore.element.dependencies(this, "object");
-        this.tagAssignment = new pimcore.element.tag.assignment(this, "object");
-        this.workflows = new pimcore.element.workflows(this, "object");
+        this.tabbar = new Ext.TabPanel({
+            tabPosition: "top",
+            region:'center',
+            deferredRender:true,
+            enableTabScroll:true,
+            border: false,
+            items: items,
+            activeTab: 0
+        });
+
+        return this.tabbar;
+    },
+
+    reload: function () {
+        this.tab.on("close", function() {
+            window.setTimeout(function (data) {
+                if (pimcore.globalmanager.exists("tree_" + data.id) == false) {
+                    pimcore.globalmanager.add("tree_" + data.id, new pimcore.plugin.alternateObjectTrees.folder(data.treeId, data.level, data.attributeValue));
+                    pimcore.helpers.rememberOpenTab("tree_" + data.id);
+                }
+                else {
+                    var tab = pimcore.globalmanager.get("tree_" + data.id);
+                    tab.activate();
+                }
+            }.bind(window, this), 500);
+        }.bind(this));
+
+        pimcore.helpers.closeObject(this.id);
+        pimcore.globalmanager.remove("tree_" + this.id);
     },
 
     getData: function () {
