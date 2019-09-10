@@ -299,4 +299,93 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
             this.saveConfig(false);
         }
     },
+
+    openColumnConfig: function(allowPreview) {
+        var fields = this.getGridConfig().columns;
+
+        var fieldKeys = Object.keys(fields);
+
+        var visibleColumns = [];
+        for(var i = 0; i < fieldKeys.length; i++) {
+            var field = fields[fieldKeys[i]];
+            if(!field.hidden) {
+                var fc = {
+                    key: fieldKeys[i],
+                    label: field.fieldConfig.label,
+                    dataType: field.fieldConfig.type,
+                    layout: field.fieldConfig.layout
+                };
+                if (field.fieldConfig.width) {
+                    fc.width = field.fieldConfig.width;
+                }
+
+                if (field.isOperator) {
+                    fc.isOperator = true;
+                    fc.attributes = field.fieldConfig.attributes;
+
+                }
+
+                visibleColumns.push(fc);
+            }
+        }
+
+        var objectId;
+        if(this["object"] && this.object["id"]) {
+            objectId = this.object.id;
+        } else if (this["element"] && this.element["id"]) {
+            objectId = this.element.id;
+        }
+
+        var columnConfig = {
+            language: this.gridLanguage,
+            pageSize: this.gridPageSize,
+            classid: this.classId,
+            objectId: objectId,
+            selectedGridColumns: visibleColumns,
+            treeId: this.object.data.general.treeId,
+            level: this.object.data.general.level,
+            attributeValue: this.object.data.general.attributeValue
+        };
+        var dialog = new pimcore.plugin.alternateObjectTrees.gridConfigDialog(columnConfig, function(data, settings, save) {
+                this.gridLanguage = data.language;
+                this.gridPageSize = data.pageSize;
+                this.createGrid(true, data.columns, settings, save);
+            }.bind(this),
+            function() {
+                Ext.Ajax.request({
+                    url: "/admin/object-helper/grid-get-column-config",
+                    params: {
+                        id: this.classId,
+                        objectId: objectId,
+                        gridtype: "grid",
+                        searchType: this.searchType
+                    },
+                    success: function(response) {
+                        response = Ext.decode(response.responseText);
+                        if (response) {
+                            fields = response.availableFields;
+                            this.createGrid(false, fields, response.settings, false);
+                            if (typeof this.saveColumnConfigButton !== "undefined") {
+                                this.saveColumnConfigButton.hide();
+                            }
+                        } else {
+                            pimcore.helpers.showNotification(t("error"), t("error_resetting_config"),
+                                "error",t(rdata.message));
+                        }
+                    }.bind(this),
+                    failure: function () {
+                        pimcore.helpers.showNotification(t("error"), t("error_resetting_config"), "error");
+                    }
+                });
+            }.bind(this),
+            true,
+            this.settings,
+            {
+                allowPreview: true,
+                classId: this.classId,
+                objectId: objectId
+            }
+        )
+
+    },
 });
