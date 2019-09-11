@@ -388,6 +388,117 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
         )
     },
 
+    saveConfig: function (asCopy) {
+        this.getSaveAsDialog();
+    },
+
+    getSaveAsDialog: function () {
+        var defaultName = new Date();
+
+        var nameField = new Ext.form.TextField({
+            fieldLabel: t('name'),
+            length: 50,
+            allowBlank: false,
+            value: this.settings.gridConfigName ? this.settings.gridConfigName : defaultName
+        });
+
+        var descriptionField = new Ext.form.TextArea({
+            fieldLabel: t('description'),
+            // height: 200,
+            value: this.settings.gridConfigDescription
+        });
+
+        var configPanel = new Ext.Panel({
+            layout: "form",
+            bodyStyle: "padding: 10px;",
+            items: [nameField, descriptionField],
+            buttons: [{
+                text: t("save"),
+                iconCls: "pimcore_icon_apply",
+                handler: function () {
+                    this.settings.gridConfigId = null;
+                    this.settings.gridConfigName = nameField.getValue();
+                    this.settings.gridConfigDescription = descriptionField.getValue();
+
+                    this.saveColumnConfig(this.getGridConfig(), this.searchType, this.saveColumnConfigButton,
+                        this.columnConfigurationSavedHandler.bind(this), this.settings);
+                    this.saveWindow.close();
+                }.bind(this)
+            }]
+        });
+
+        this.saveWindow = new Ext.Window({
+            width: 600,
+            height: 300,
+            modal: true,
+            title: t('save_as_copy'),
+            layout: "fit",
+            items: [configPanel]
+        });
+
+        this.saveWindow.show();
+        nameField.focus();
+        nameField.selectText();
+        return this.window;
+    },
+
+    getTableDescription: function () {
+        Ext.Ajax.request({
+            url: "/admin/elements-alternate-object-trees/admin/grid-get-column-config",
+            params: {
+                id: this.object.id,
+                alternateTreeId: this.object.data.general.treeId,
+                gridtype: "grid",
+                gridConfigId: this.settings ? this.settings.gridConfigId : null,
+                searchType: this.searchType
+            },
+            success: this.createGrid.bind(this, false)
+        });
+    },
+
+    saveColumnConfig: function (configuration, searchType, button, callback, settings) {
+        try {
+            var data = {
+                classId: this.object.id,
+                gridconfig: Ext.encode(configuration),
+                searchType: searchType,
+                settings: Ext.encode(settings)
+            };
+
+            Ext.Ajax.request({
+                url: '/admin/elements-alternate-object-trees/admin/grid-save-column-config',
+                method: "post",
+                params: data,
+                success: function (response) {
+                    try {
+                        var rdata = Ext.decode(response.responseText);
+                        if (rdata && rdata.success) {
+                            if (button) {
+                                button.hide();
+                            }
+                            if (typeof callback == "function") {
+                                callback(rdata);
+                            }
+                            pimcore.helpers.showNotification(t("success"), t("saved_successfully"), "success");
+                        }
+                        else {
+                            pimcore.helpers.showNotification(t("error"), t("saving_failed"),
+                                "error", t(rdata.message));
+                        }
+                    } catch (e) {
+                        pimcore.helpers.showNotification(t("error"), t("saving_failed"), "error");
+                    }
+                }.bind(this),
+                failure: function () {
+                    pimcore.helpers.showNotification(t("error"), t("saving_failed"), "error");
+                }
+            });
+
+        } catch (e3) {
+            pimcore.helpers.showNotification(t("error"), t("saving_failed"), "error");
+        }
+    },
+
     exportPrepare: function(settings){
         var jobs = [];
 

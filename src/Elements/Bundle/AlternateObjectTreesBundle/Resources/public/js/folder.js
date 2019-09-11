@@ -61,19 +61,18 @@ pimcore.plugin.alternateObjectTrees.folder = Class.create(pimcore.object.folder,
     reload: function () {
         this.tab.on("close", function() {
             window.setTimeout(function (data) {
-                if (pimcore.globalmanager.exists("tree_" + data.id) == false) {
-                    pimcore.globalmanager.add("tree_" + data.id, new pimcore.plugin.alternateObjectTrees.folder(data.treeId, data.level, data.attributeValue));
-                    pimcore.helpers.rememberOpenTab("tree_" + data.id);
+                if (pimcore.globalmanager.exists("object_" + data.id) == false) {
+                    pimcore.globalmanager.add("object_" + data.id, new pimcore.plugin.alternateObjectTrees.folder(data.treeId, data.level, data.attributeValue));
+                    pimcore.helpers.rememberOpenTab("object_" + data.id);
                 }
                 else {
-                    var tab = pimcore.globalmanager.get("tree_" + data.id);
+                    var tab = pimcore.globalmanager.get("object_" + data.id);
                     tab.activate();
                 }
             }.bind(window, this), 500);
         }.bind(this));
 
         pimcore.helpers.closeObject(this.id);
-        pimcore.globalmanager.remove("tree_" + this.id);
     },
 
     getData: function () {

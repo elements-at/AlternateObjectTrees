@@ -16,5 +16,8 @@
         "Elements\\Bundle\\AlternateObjectTreesBundle\\ElementsAlternateObjectTreesBundle"
       ]
     }
+  },
+  "require": {
+    "ext-json": "*"
   }
 }

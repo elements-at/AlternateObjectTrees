@@ -202,12 +202,12 @@ pimcore.plugin.alternateObjectTrees.tree = Class.create(pimcore.object.tree, {
                 pimcore.helpers.openObject(record.get('objectId'), record.get('type'));
             } else {
                 var id = record.get('treeId')+'-'+record.get('level')+'-'+record.get('attributeValue');
-                if (pimcore.globalmanager.exists("tree_" + id) == false) {
-                    pimcore.globalmanager.add("tree_" + id, new pimcore.plugin.alternateObjectTrees.folder(record.get('treeId'), record.get('level'), record.get('attributeValue')));
-                    pimcore.helpers.rememberOpenTab("tree_" + id);
+                if (pimcore.globalmanager.exists("object_" + id) == false) {
+                    pimcore.globalmanager.add("object_" + id, new pimcore.plugin.alternateObjectTrees.folder(record.get('treeId'), record.get('level'), record.get('attributeValue')));
+                    pimcore.helpers.rememberOpenTab("object_" + id);
                 }
                 else {
-                    var tab = pimcore.globalmanager.get("tree_" + id);
+                    var tab = pimcore.globalmanager.get("object_" + id);
                     tab.activate();
                 }
             }

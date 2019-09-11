@@ -18,6 +18,7 @@ namespace Elements\Bundle\AlternateObjectTreesBundle\LevelDefinition;
 use Pimcore\Db;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\DataObject\Concrete;
 
 class Relations implements LevelDefinitionInterface
 {
@@ -94,6 +95,10 @@ class Relations implements LevelDefinitionInterface
             $groupedValues[] = ['value' => $row['value'], 'label' => $label, 'count' => $row['count']];
         }
 
+        usort($groupedValues, static function ($group1, $group2) {
+            return $group1['label'] <=> $group2['label'];
+        });
+
         // get record count
         $count = $db->fetchOne('select FOUND_ROWS()');
 
@@ -143,5 +148,19 @@ class Relations implements LevelDefinitionInterface
         }
 
         return $list;
+    }
+
+    public function getGroupName($attributeValue)
+    {
+        $object = Concrete::getById($attributeValue);
+        if(!$object instanceof Concrete) {
+            return '';
+        }
+
+        $value = $object->getKey();
+
+        $label = $this->hasLabel() ? $this->getLabel() : sprintf('objects %s = %s', $this->getFieldname(), $value);
+
+        return sprintf($label, $value);
     }
 }
