@@ -415,16 +415,7 @@ pimcore.plugin.alternateObjectTrees.config.items = {
                                 type: 'input',
                                 name: panel.settings.getForm().findField("o_class").getValue()
                             }
-                        },
-                        listeners: {
-                            beforeload: function (store, operation) {
-                                if(operation.getConfig('params')) {
-                                    operation.getConfig('params').name = panel.settings.getForm().findField("o_class").getValue();
-                                }
-                            }
                         }
-                        // reader configs
-                        // idProperty: "name",
                     }),
                     editable: false,
                     value: data.fieldname,
@@ -505,17 +496,7 @@ pimcore.plugin.alternateObjectTrees.config.items = {
                                 type: 'relations',
                                 name: panel.settings.getForm().findField("o_class").getValue()
                             }
-                        },
-                        // baseParams: {
-                        //     type: "relations"
-                        // },
-                        listeners: {
-                            beforeload: function(store, operation) {
-                                operation.getConfig('params').name = panel.settings.getForm().findField("o_class").getValue()
-                            }
                         }
-                        // reader configs
-                        // idProperty: "name"
                     }),
                     queryMode: 'remote',
                     editable: false,
