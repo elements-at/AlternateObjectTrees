@@ -524,10 +524,8 @@ class AdminController extends DataObjectHelperController
 
     /**
      * @Route("/get-export-jobs")
-     *
-     * @param Request $request
      */
-    public function getExportJobsAction(Request $request, GridHelperService $gridHelperService) {
+    public function exportJobsAction(Request $request) {
         $requestedLanguage = $this->extractLanguage($request);
         $allParams = array_merge($request->request->all(), $request->query->all());
         $allParams['folderId'] = 1;
@@ -551,6 +549,7 @@ class AdminController extends DataObjectHelperController
         $list = $service->getListWithCondition(null, $request->get('level'), $request->get('attributeValue'));
         $condition = $list->getCondition();
 
+        $gridHelperService = new GridHelperService();
         $list = $gridHelperService->prepareListingForGrid($allParams, $requestedLanguage, $this->getAdminUser());
         $list->setCondition($list->getCondition().' AND '.$condition);
 
