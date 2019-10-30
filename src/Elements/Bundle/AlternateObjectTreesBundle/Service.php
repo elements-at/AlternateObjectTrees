@@ -73,6 +73,7 @@ class Service
         return null;
     }
 
+
     /**
      * @param $filterValues
      * @param $currentLevel
@@ -82,12 +83,13 @@ class Service
      */
     public function buildCondition($filterValues, $currentLevel, $currentAttributeValue)
     {
+        $db = Db::get();
         $filterValues = json_decode($filterValues, true);
 
-        $condition = 'o_classId = ' . $this->getClass()->getId();
+        $condition = 'o_classId = ' . $db->quote($this->getClass()->getId());
 
         if ($this->tree->getBasepath()) {
-            $db = Db::get();
+
             $condition .= ' AND o_path LIKE ' . $db->quote('%' . $this->tree->getBasepath() . '%');
         }
 

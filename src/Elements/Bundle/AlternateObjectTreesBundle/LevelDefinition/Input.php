@@ -57,7 +57,7 @@ class Input implements LevelDefinitionInterface
 
         // create query
         $sql = 'SELECT SQL_CALC_FOUND_ROWS %1$s as "value", %1$s as "label", count(*) as "count"
-                FROM object_%2$d
+                FROM object_%2$s
                 WHERE %3$s
                 GROUP BY %1$s
                 ORDER BY %1$s';

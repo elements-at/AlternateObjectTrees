@@ -60,7 +60,7 @@ class Relations implements LevelDefinitionInterface
         }
 
         // relation objects query
-        $query = sprintf('SELECT SQL_CALC_FOUND_ROWS dest_id as "value", "" as "label", count(*) as "count" FROM object_relations_%2$d
+        $query = sprintf('SELECT SQL_CALC_FOUND_ROWS dest_id as "value", "" as "label", count(*) as "count" FROM object_relations_%2$s
                           WHERE fieldname = %1$s AND src_id IN
                             (SELECT o_id FROM object_%2$s %3$s)
                           GROUP BY dest_id',
