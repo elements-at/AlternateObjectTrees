@@ -71,6 +71,7 @@ pimcore.plugin.alternateObjectTrees.tree = Class.create(pimcore.object.tree, {
         rootNodeConfig.text = t("home");
         rootNodeConfig.allowDrag = true;
         rootNodeConfig.iconCls = "pimcore_icon_home";
+        rootNodeConfig.cls = 'pimcore_tree_node_root';
 
         var store = Ext.create('pimcore.data.PagingTreeStore', {
             autoLoad: false,
