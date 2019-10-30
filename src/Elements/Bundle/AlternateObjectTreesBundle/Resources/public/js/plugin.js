@@ -27,7 +27,7 @@ pimcore.plugin.alternateObjectTrees.plugin = Class.create(pimcore.plugin.admin,{
             },
             method: "GET",
             success: function(response){
-                var list = Ext.util.JSON.decode(response.responseText)
+                var list = Ext.util.JSON.decode(response.responseText);
                 Ext.each(list, function(tree) {
 
                     // add lang for security settings
@@ -61,7 +61,7 @@ pimcore.plugin.alternateObjectTrees.plugin = Class.create(pimcore.plugin.admin,{
 
         // add config panel to settings menu
         pimcore.globalmanager.get("layout_toolbar").settingsMenu.items.each(function(item) {
-            if(item.iconCls == 'pimcore_icon_object') {
+            if(item.iconCls == 'pimcore_icon_object' || item.iconCls == 'pimcore_nav_icon_object') {
                 item.menu.add({
                     text: t("plugin_alternate_object_trees_config"),
                     iconCls: "plugin_alternate_object_trees",

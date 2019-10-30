@@ -7,11 +7,17 @@
       "": "src"
     }
   },
+  "require-dev": {
+    "pimcore/pimcore": "5.*|6.*"
+  },
   "extra": {
     "pimcore": {
       "bundles": [
         "Elements\\Bundle\\AlternateObjectTreesBundle\\ElementsAlternateObjectTreesBundle"
       ]
     }
+  },
+  "require": {
+    "ext-json": "*"
   }
 }

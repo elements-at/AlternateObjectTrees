@@ -59,7 +59,8 @@ class Input implements LevelDefinitionInterface
         $sql = 'SELECT SQL_CALC_FOUND_ROWS %1$s as "value", %1$s as "label", count(*) as "count"
                 FROM object_%2$d
                 WHERE %3$s
-                GROUP BY %1$s';
+                GROUP BY %1$s
+                ORDER BY %1$s';
         if ($offset && $limit) {
             $sql .= sprintf(' LIMIT %d, %d', $offset, $limit);
         }
@@ -111,5 +112,12 @@ class Input implements LevelDefinitionInterface
         }
 
         return $list;
+    }
+
+    public function getGroupName($attributeValue)
+    {
+        $label = $this->hasLabel() ? $this->getLabel() : sprintf('objects %s = %s', $this->getFieldname(), $attributeValue);
+
+        return sprintf($label, $attributeValue);
     }
 }

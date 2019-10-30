@@ -61,4 +61,11 @@ interface LevelDefinitionInterface
      * @return boolean
      */
     public function hasLabel();
+
+    /**
+     * convert attribute value into human readable value
+     *
+     * @return string
+     */
+    public function getGroupName($attributeValue);
 }
