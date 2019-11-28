@@ -24,7 +24,7 @@ class Installer extends AbstractInstaller
     public function isInstalled()
     {
         try {
-            $result = Db::get()->fetchAll("show tables like '" . Dao::TABLE_NAME . "'");
+            $result = Db::get()->fetchAll("SHOW TABLES LIKE '" . Dao::TABLE_NAME . "'");
 
             return !empty($result) ? true : false;
         } catch (\Exception $e) {
@@ -51,7 +51,7 @@ class Installer extends AbstractInstaller
                 `customTreeBuilderClass` VARCHAR(255) NULL DEFAULT NULL,
                 `o_class` VARCHAR(255) NOT NULL,
                 `description` VARCHAR(255) NULL DEFAULT NULL,
-                `basepath` VARCHAR(255) NULL DEFAULT NULL,              
+                `basepath` VARCHAR(255) NULL DEFAULT NULL,
                 `jsonLevelDefinitions` TEXT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE INDEX `name` (`name`),
@@ -71,6 +71,6 @@ class Installer extends AbstractInstaller
     public function uninstall()
     {
         $db = Db::get();
-        $db->query('drop table if exists `' . Dao::TABLE_NAME . '`')->closeCursor();
+        $db->query('DROP TABLE IF EXISTS `' . Dao::TABLE_NAME . '`')->closeCursor();
     }
 }
