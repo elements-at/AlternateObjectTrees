@@ -70,7 +70,7 @@ class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
      */
     public function getInstaller()
     {
-        return new Installer();
+        return $this->container->get(Installer::class);
     }
 
     public function getVersion()
