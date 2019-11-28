@@ -58,7 +58,7 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
                 autoSync: false,
                 proxy: {
                     type: 'ajax',
-                    url: '/admin/elements-alternate-object-trees/admin/get-alternate-object-trees',
+                    url: '/admin/elements-alternate-object-trees/alternate-object-trees',
                     reader: {
                         type: 'json'
                     }
@@ -150,7 +150,8 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
         }
 
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/get-alternate-object-tree",
+            url: "/admin/elements-alternate-object-trees/alternate-object-tree",
+            method: "GET",
             params: {
                 name: id
             },
@@ -199,7 +200,8 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
             }
 
             Ext.Ajax.request({
-                url: "/admin/elements-alternate-object-trees/admin/add-alternate-object-tree",
+                url: "/admin/elements-alternate-object-trees/admin/alternate-object-tree",
+                method: "POST"
                 params: {
                     name: value
                 },
@@ -227,7 +229,8 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
 
     deleteField: function (view, model) {
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/delete-alternate-object-tree",
+            url: "/admin/elements-alternate-object-trees/delete-alternate-object-tree",
+            method: "DELETE",
             params: {
                 id: model.get('id')
             }

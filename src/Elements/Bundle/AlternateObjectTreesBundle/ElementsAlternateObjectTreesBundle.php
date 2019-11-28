@@ -59,6 +59,7 @@ class ElementsAlternateObjectTreesBundle extends AbstractPimcoreBundle
             '/bundles/elementsalternateobjecttrees/js/search.js',
             '/bundles/elementsalternateobjecttrees/js/gridConfigDialog.js',
             '/bundles/elementsalternateobjecttrees/js/config/item.js',
+            '/bundles/elementsalternateobjecttrees/js/config/items.js',
             '/bundles/elementsalternateobjecttrees/js/config/panel.js'
         ];
     }

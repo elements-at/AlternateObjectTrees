@@ -37,14 +37,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/elements-alternate-object-trees/admin")
+ * @Route("/admin/elements-alternate-object-trees")
  */
 class AdminController extends DataObjectHelperController
 {
     /**
      * get a list of all defined trees
      *
-     * @Route("/get-alternate-object-trees")
+     * @Route("/alternate-object-trees", methods={"GET"})
      */
     public function getAlternateObjectTreesAction(Request $request)
     {
@@ -90,13 +90,13 @@ class AdminController extends DataObjectHelperController
             $return[] = $config;
         }
 
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 
     /**
      * create new tree
      *
-     * @Route("/add-alternate-object-tree")
+     * @Route("/alternate-object-tree", methods={"POST"})
      */
     public function addAlternateObjectTreeAction(Request $request)
     {
@@ -121,13 +121,13 @@ class AdminController extends DataObjectHelperController
             'id' => $tree->getId()
         ];
 
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 
     /**
      * delete a tree
      *
-     * @Route("/delete-alternate-object-tree")
+     * @Route("/alternate-object-tree", methods={"DELETE"})
      */
     public function deleteAlternateObjectTreeAction(Request $request)
     {
@@ -147,13 +147,13 @@ class AdminController extends DataObjectHelperController
             'success' => true
         ];
 
-        return $this->json($return);
+        return $this->adminJson($return);
     }
 
     /**
      * get configured tree data
      *
-     * @Route("/get-alternate-object-tree")
+     * @Route("/alternate-object-tree", methods={"GET"})
      */
     public function getAlternateObjectTreeAction(Request $request)
     {
@@ -172,13 +172,13 @@ class AdminController extends DataObjectHelperController
             'levelDefinitions' => json_decode($tree->getJsonLevelDefinitions(), true)
         ];
 
-        return $this->json($config);
+        return $this->adminJson($config);
     }
 
     /**
      * save tree configuration
      *
-     * @Route("/save-alternate-object-tree")
+     * @Route("/alternate-object-tree", methods={"PUT"})
      */
     public function saveAlternateObjectTreeAction(Request $request)
     {
@@ -227,7 +227,7 @@ class AdminController extends DataObjectHelperController
 
         $tree->save();
 
-        return new Response();
+        return $this->adminJson(["success" => true, "id" => $tree->getId()]);
     }
 
     /**
@@ -256,7 +256,7 @@ class AdminController extends DataObjectHelperController
             $fields[] = $field;
         }
 
-        return $this->json($fields);
+        return $this->adminJson($fields);
     }
 
     /**
@@ -334,18 +334,17 @@ class AdminController extends DataObjectHelperController
         }
 
         if ($request->get('limit')) {
-            return $this->json([
+            return $this->adminJson([
                 'total' => $childAmount,
                 'nodes' => $objects
             ]);
         } else {
-            return $this->json($objects);
+            return $this->adminJson($objects);
         }
     }
 
     /**
-     * desc?
-     *
+     * @param Request $request
      * @param Service $service
      * @param $currentLevel
      *
