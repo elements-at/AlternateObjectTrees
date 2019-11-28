@@ -2,22 +2,20 @@
   "name": "elements/alternate-object-trees",
   "type": "pimcore-bundle",
   "description": "Pimcore Bundle for defining alternate object trees based on data object attributes",
+  "require": {
+    "ext-json": "*",
+    "pimcore/pimcore": "5.* || 6.*"
+  },
   "autoload": {
     "psr-4": {
       "": "src"
     }
-  },
-  "require-dev": {
-    "pimcore/pimcore": "5.*|6.*"
-  },
+  },  
   "extra": {
     "pimcore": {
       "bundles": [
         "Elements\\Bundle\\AlternateObjectTreesBundle\\ElementsAlternateObjectTreesBundle"
       ]
     }
-  },
-  "require": {
-    "ext-json": "*"
   }
 }
