@@ -1,3 +1,17 @@
+/**
+ * Pimcore
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.pimcore.org/license
+ *
+ * @copyright  Copyright (c) 2009-2010 elements.at New Media Solutions GmbH (http://www.elements.at)
+ * @license    http://www.pimcore.org/license     New BSD License
+ */
+
 pimcore.registerNS("pimcore.plugin.alternateObjectTrees.folder");
 pimcore.plugin.alternateObjectTrees.folder = Class.create(pimcore.object.folder, {
     initialize: function(treeId, level, attributeValue) {
@@ -78,7 +92,7 @@ pimcore.plugin.alternateObjectTrees.folder = Class.create(pimcore.object.folder,
     getData: function () {
         var options = this.options || {};
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/grid-get-data",
+            url: "/admin/elements-alternate-object-trees/grid-get-data",
             params: {alternateTreeId: this.treeId, level: this.level, attributeValue: this.attributeValue},
             ignoreErrors: options.ignoreNotFoundError,
             success: this.getDataComplete.bind(this),

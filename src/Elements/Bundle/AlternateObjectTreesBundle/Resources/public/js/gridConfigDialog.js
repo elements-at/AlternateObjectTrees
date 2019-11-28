@@ -1,3 +1,17 @@
+/**
+ * Pimcore
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.pimcore.org/license
+ *
+ * @copyright  Copyright (c) 2009-2010 elements.at New Media Solutions GmbH (http://www.elements.at)
+ * @license    http://www.pimcore.org/license     New BSD License
+ */
+
 pimcore.registerNS("pimcore.plugin.alternateObjectTrees.gridConfigDialog");
 pimcore.plugin.alternateObjectTrees.gridConfigDialog = Class.create(pimcore.object.helpers.gridConfigDialog, {
     requestPreview: function () {
@@ -12,7 +26,7 @@ pimcore.plugin.alternateObjectTrees.gridConfigDialog = Class.create(pimcore.obje
         }
 
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/grid-proxy?alternateTreeId=" + this.config.treeId + "&level="+this.config.level+"&attributeValue="+this.config.attributeValue,
+            url: "/admin/elements-alternate-object-trees/grid-proxy?alternateTreeId=" + this.config.treeId + "&level="+this.config.level+"&attributeValue="+this.config.attributeValue,
             method: 'POST',
             params: {
                 "fields[]": keys,

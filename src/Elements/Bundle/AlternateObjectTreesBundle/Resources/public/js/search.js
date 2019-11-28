@@ -1,3 +1,17 @@
+/**
+ * Pimcore
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.pimcore.org/license
+ *
+ * @copyright  Copyright (c) 2009-2010 elements.at New Media Solutions GmbH (http://www.elements.at)
+ * @license    http://www.pimcore.org/license     New BSD License
+ */
+
 pimcore.registerNS("pimcore.plugin.alternateObjectTrees.search");
 pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search, {
     createGrid: function (fromConfig, response, settings, save) {
@@ -63,7 +77,7 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
         var gridHelper = new pimcore.object.helpers.grid(
             klass.data.text,
             fields,
-            "/admin/elements-alternate-object-trees/admin/grid-proxy?alternateTreeId=" + this.object.data.general.treeId + "&level="+this.object.data.general.level+"&attributeValue="+this.object.data.general.attributeValue,
+            "/admin/elements-alternate-object-trees/grid-proxy?alternateTreeId=" + this.object.data.general.treeId + "&level="+this.object.data.general.level+"&attributeValue="+this.object.data.general.attributeValue,
             {
                 language: this.gridLanguage,
                 // limit: itemsPerPage
@@ -444,7 +458,7 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
 
     getTableDescription: function () {
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/grid-get-column-config",
+            url: "/admin/elements-alternate-object-trees/grid-get-column-config",
             params: {
                 id: this.object.id,
                 alternateTreeId: this.object.data.general.treeId,
@@ -466,7 +480,7 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
             };
 
             Ext.Ajax.request({
-                url: '/admin/elements-alternate-object-trees/admin/grid-save-column-config',
+                url: '/admin/elements-alternate-object-trees/grid-save-column-config',
                 method: "post",
                 params: data,
                 success: function (response) {
@@ -547,7 +561,7 @@ pimcore.plugin.alternateObjectTrees.search = Class.create(pimcore.object.search,
 
 
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/admin/get-export-jobs",
+            url: "/admin/elements-alternate-object-trees/get-export-jobs",
             params: params,
             success: function (response) {
                 var rdata = Ext.decode(response.responseText);
