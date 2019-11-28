@@ -1,5 +1,5 @@
 /**
- * Pimcore
+ * Elements.at
  *
  * LICENSE
  *
