@@ -4,7 +4,7 @@ services:
         autoconfigure: true
         public: false
 
-    Elements\Bundle\AlternateObjectTrees\Controller\:
+    Elements\Bundle\AlternateObjectTreesBundle\Controller\:
         resource: '../../Controller'
         public: true
         tags: ['controller.service_arguments']
