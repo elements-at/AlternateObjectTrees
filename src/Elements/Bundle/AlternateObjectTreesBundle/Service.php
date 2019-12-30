@@ -62,12 +62,14 @@ class Service
      */
     public function getLevelDefinitionByLevel($level)
     {
-        $levelDefinition = $this->levelDefinitions[$level - 1];
-        $class = $this->getClass();
-        if ($levelDefinition && $class) {
-            $levelDefinitionClass = 'Elements\\Bundle\\AlternateObjectTreesBundle\\LevelDefinition\\'.ucfirst($levelDefinition['type']);
+        if(array_key_exists($level - 1, $this->levelDefinitions)) {
+            $levelDefinition = $this->levelDefinitions[$level - 1];
+            $class = $this->getClass();
+            if ($levelDefinition && $class) {
+                $levelDefinitionClass = 'Elements\\Bundle\\AlternateObjectTreesBundle\\LevelDefinition\\' . ucfirst($levelDefinition['type']);
 
-            return new $levelDefinitionClass($class, $levelDefinition['config']);
+                return new $levelDefinitionClass($class, $levelDefinition['config']);
+            }
         }
 
         return null;

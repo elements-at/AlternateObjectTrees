@@ -200,8 +200,8 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
             }
 
             Ext.Ajax.request({
-                url: "/admin/elements-alternate-object-trees/admin/alternate-object-tree",
-                method: "POST"
+                url: "/admin/elements-alternate-object-trees/alternate-object-tree",
+                method: "POST",
                 params: {
                     name: value
                 },
