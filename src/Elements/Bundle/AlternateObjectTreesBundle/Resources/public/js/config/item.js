@@ -102,7 +102,7 @@ pimcore.plugin.alternateObjectTrees.config.item = Class.create({
                 height: 100
             }, {
                 xtype: "textfield",
-                fieldLabel: t("root_folder"),
+                fieldLabel: t("plugin_alternate_object_trees_root_folder"),
                 name: "basePath",
                 width: 400,
                 cls: "input_drop_target",
@@ -171,7 +171,7 @@ pimcore.plugin.alternateObjectTrees.config.item = Class.create({
                 xtype: "textfield",
                 name: "customTreeBuilderClass",
                 value: this.data.customTreeBuilderClass,
-                fieldLabel: t("customTreeBuilderClass"),
+                fieldLabel: t("plugin_alternate_object_trees_customTreeBuilderClass"),
                 width: 400
             }
             ]
