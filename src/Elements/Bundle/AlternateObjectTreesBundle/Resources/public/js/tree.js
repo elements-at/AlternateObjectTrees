@@ -32,7 +32,7 @@ pimcore.plugin.alternateObjectTrees.tree = Class.create(pimcore.object.tree, {
             // },
             treeId: "pimcore_panel_tree_alternate_object_tree_" + config.id,
             treeIconCls: "pimcore_panel_tree_objects_alternate_tree",
-            treeTitle: config.name, //t('pimcore_panel_tree_objects_alternate_tree'),
+            treeTitle: config.name,
             parentPanel: Ext.getCmp("pimcore_panel_tree_left"),
             index: 4
         };
