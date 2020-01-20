@@ -30,7 +30,7 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
             this.panel = new Ext.Panel({
                 id: "plugin_alternate_object_trees_config",
                 title: t("plugin_alternate_object_trees_config"),
-                iconCls: "plugin_alternate_object_trees",
+                iconCls: "plugin_alternate_object_trees_config",
                 border: false,
                 layout: "border",
                 closable: true,
