@@ -29,7 +29,6 @@ pimcore.plugin.alternateObjectTrees.config.item = Class.create({
         }
     },
 
-
     addLayout: function () {
 
         this.editpanel = new Ext.Panel({
@@ -184,12 +183,10 @@ pimcore.plugin.alternateObjectTrees.config.item = Class.create({
             autoScroll: true,
             bodyStyle: "padding: 20px;",
             title: this.data.name,
-//            iconCls: 'pimcore_panel_tree_objects_alternate_tree_custom_' + this.data.id,
-//             id: "plugin_alternate_object_trees_config_panel_" + this.data.name,
+            id: "plugin_alternate_object_trees_config_panel_" + this.data.id,
             items: [this.settings, this.itemContainer],
             buttons: panelButtons
         });
-
 
         this.parentPanel.getEditPanel().add(this.panel);
         this.parentPanel.getEditPanel().setActiveItem(this.panel);

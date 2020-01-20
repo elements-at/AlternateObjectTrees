@@ -21,7 +21,7 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
 
     activate: function () {
         var tabPanel = Ext.getCmp("pimcore_panel_tabs");
-        tabPanel.activate("plugin_alternate_object_trees_config");
+        tabPanel.setActiveItem("plugin_alternate_object_trees_config");
     },
 
     getTabPanel: function () {
@@ -145,7 +145,7 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
 
         var existingPanel = Ext.getCmp("plugin_alternate_object_trees_config_panel_" + id);
         if (existingPanel) {
-            this.editPanel.activate(existingPanel);
+            this.editPanel.setActiveItem(existingPanel);
             return;
         }
 
@@ -240,4 +240,3 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
         this.tree.getStore().remove(model);
     }
 });
-
