@@ -229,7 +229,7 @@ pimcore.plugin.alternateObjectTrees.config.panel = Class.create({
 
     deleteField: function (view, model) {
         Ext.Ajax.request({
-            url: "/admin/elements-alternate-object-trees/delete-alternate-object-tree",
+            url: "/admin/elements-alternate-object-trees/alternate-object-tree",
             method: "DELETE",
             params: {
                 id: model.get('id')
