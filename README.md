@@ -19,7 +19,7 @@ If you specifiy a custom tree builder class in your tree config, such as
 \AppBundle\Util\Backend\DynamicTree\VirtualProductTreeBuilder
 ```
 then it is possible to combine multiple object (types) per child node, by overriding
-the ``buildCustomTree`` method, just as in ```DefaultTreeBuilder.php````.
+the ``buildCustomTree`` method, just as in ``DefaultTreeBuilder.php``.
 
 ### Upgrade Notes
 
