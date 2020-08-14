@@ -644,10 +644,11 @@ class AdminController extends DataObjectHelperController
      * @Route("/grid-get-column-config", methods={"GET"})
      *
      * @param Request $request
+     * @param \Pimcore\Config $config
      *
      * @return JsonResponse
      */
-    public function gridGetColumnConfigAction(Request $request)
+    public function gridGetColumnConfigAction(Request $request, \Pimcore\Config $config)
     {
         $isDelete = false;
         $tree = null;
@@ -883,8 +884,7 @@ class AdminController extends DataObjectHelperController
             return ($a['position'] < $b['position']) ? -1 : 1;
         });
 
-        $config = \Pimcore\Config::getSystemConfig();
-        $frontendLanguages = Admin::reorderWebsiteLanguages(Admin::getCurrentUser(), $config->general->validLanguages);
+        $frontendLanguages = Admin::reorderWebsiteLanguages(Admin::getCurrentUser(), $config['general']['valid_languages']);
         if ($frontendLanguages) {
             $language = explode(',', $frontendLanguages)[0];
         } else {
