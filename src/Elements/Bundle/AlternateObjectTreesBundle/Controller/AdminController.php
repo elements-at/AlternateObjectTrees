@@ -297,8 +297,9 @@ class AdminController extends DataObjectHelperController
 
                 $objects = $levelConfig['list'];
 
+                $attributeValue = $request->get('attributeValue');
                 foreach ($objects as &$object) {
-                    if ($request->get('attributeValue')) {
+                    if (!empty($attributeValue) || $attributeValue === '0') {      // test for '0'
                         $filterValues[$level] = $request->get('attributeValue');
                     }
                     $object['filterValues'] = $filterValues;
