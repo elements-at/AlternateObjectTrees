@@ -52,15 +52,19 @@ class Input implements LevelDefinitionInterface
         // create condition
         $where = $this->condition == '' ? 1 : $this->condition;
         if ($condition) {
+            $where = 'LIKE \'%'.$where.'%\'';
             $where .= ' AND ' . $condition;
         }
+        // TODO: this is such a bonkers way to pass down values.
+        // When ViCA is built, we have to do this clean and simple.
 
         // create query
         $sql = 'SELECT SQL_CALC_FOUND_ROWS %1$s as "value", %1$s as "label", count(*) as "count"
                 FROM object_%2$s
-                WHERE %3$s
+                WHERE object_%2$s.%1$s %3$s
                 GROUP BY %1$s
                 ORDER BY %1$s';
+
         if ($offset && $limit) {
             $sql .= sprintf(' LIMIT %d, %d', $offset, $limit);
         }
